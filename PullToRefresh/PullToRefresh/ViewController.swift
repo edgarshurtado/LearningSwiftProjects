@@ -7,20 +7,12 @@
 
 import UIKit
 
+enum mleanWorkers: String {
+    case Adrian, Sergio, Robe, Edgar, Carles, Hector, Damian, Alberto
+}
 
 class ViewController: UITableViewController {
-    var currentSTDSquadMembers : [String] = []
-    
-    let originalSTDSquadMembers = [
-        "Adrian",
-        "Sergio",
-        "Robe",
-        "Edgar",
-        "Carles",
-        "Hector"
-    ]
-    
-    let newSTDSquadMembers = ["Damian", "Alberto"]
+    var currentSTDSquadMembers : [mleanWorkers] = []
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return currentSTDSquadMembers.count
@@ -29,16 +21,22 @@ class ViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "squadMemberCell", for: indexPath)
         var contentConfiguration = cell.defaultContentConfiguration()
-        contentConfiguration.text = currentSTDSquadMembers[indexPath.row]
+        contentConfiguration.text = currentSTDSquadMembers[indexPath.row].rawValue
         cell.contentConfiguration = contentConfiguration
         return cell
     }
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        currentSTDSquadMembers = originalSTDSquadMembers
         refreshControl = getRefreshControl()
+        currentSTDSquadMembers = [
+            .Adrian,
+            .Robe,
+            .Sergio,
+            .Edgar,
+            .Hector,
+            .Carles
+        ]
     }
     
     private func getRefreshControl() -> UIRefreshControl {
@@ -48,13 +46,13 @@ class ViewController: UITableViewController {
     }
     
     @objc private func refreshSquadMembers(_ sender: Any) {
-        let membersToRemove = ["Adrian", "Sergio", "Robe"]
+        let newSTDSquadMembers: [mleanWorkers] = [.Damian, .Alberto]
+        let membersToRemove: [mleanWorkers] = [.Adrian, .Sergio, .Robe]
         currentSTDSquadMembers += newSTDSquadMembers
         currentSTDSquadMembers = currentSTDSquadMembers.filter { !membersToRemove.contains($0) }
         tableView.reloadData()
         refreshControl?.endRefreshing()
     }
-
 
 }
 
