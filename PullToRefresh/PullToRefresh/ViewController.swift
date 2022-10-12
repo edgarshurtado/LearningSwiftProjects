@@ -7,8 +7,11 @@
 
 import UIKit
 
+
 class ViewController: UITableViewController {
-    let stdSquadMembers = [
+    var currentSTDSquadMembers : [String] = []
+    
+    let originalSTDSquadMembers = [
         "Adrian",
         "Sergio",
         "Robe",
@@ -17,14 +20,16 @@ class ViewController: UITableViewController {
         "Hector"
     ]
     
+    let newSTDSquadMembers = ["Damian", "Alberto"]
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return stdSquadMembers.count
+        return currentSTDSquadMembers.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "squadMemberCell", for: indexPath)
         var contentConfiguration = cell.defaultContentConfiguration()
-        contentConfiguration.text = stdSquadMembers[indexPath.row]
+        contentConfiguration.text = currentSTDSquadMembers[indexPath.row]
         cell.contentConfiguration = contentConfiguration
         return cell
     }
@@ -32,7 +37,22 @@ class ViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        currentSTDSquadMembers = originalSTDSquadMembers
+        refreshControl = getRefreshControl()
+    }
+    
+    private func getRefreshControl() -> UIRefreshControl {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refreshSquadMembers(_:)), for: .valueChanged)
+        return refreshControl
+    }
+    
+    @objc private func refreshSquadMembers(_ sender: Any) {
+        let membersToRemove = ["Adrian", "Sergio", "Robe"]
+        currentSTDSquadMembers += newSTDSquadMembers
+        currentSTDSquadMembers = currentSTDSquadMembers.filter { !membersToRemove.contains($0) }
+        tableView.reloadData()
+        refreshControl?.endRefreshing()
     }
 
 
