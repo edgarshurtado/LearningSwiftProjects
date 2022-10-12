@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum mleanWorkers: String {
+enum mleanWorkers: String, CaseIterable {
     case Adrian, Sergio, Robe, Edgar, Carles, Hector, Damian, Alberto
 }
 
@@ -41,18 +41,17 @@ class ViewController: UITableViewController {
     
     private func getRefreshControl() -> UIRefreshControl {
         let refreshControl = UIRefreshControl()
+        refreshControl.tintColor = .blue
+        refreshControl.attributedTitle = NSAttributedString(string: "Uploading Squad Members", attributes: [.foregroundColor: UIColor.blue])
         refreshControl.addTarget(self, action: #selector(refreshSquadMembers(_:)), for: .valueChanged)
         return refreshControl
     }
     
     @objc private func refreshSquadMembers(_ sender: Any) {
-        let newSTDSquadMembers: [mleanWorkers] = [.Damian, .Alberto]
-        let membersToRemove: [mleanWorkers] = [.Adrian, .Sergio, .Robe]
-        currentSTDSquadMembers += newSTDSquadMembers
-        currentSTDSquadMembers = currentSTDSquadMembers.filter { !membersToRemove.contains($0) }
+        let notStdMembers: [mleanWorkers] = [.Adrian, .Sergio, .Robe]
+        currentSTDSquadMembers = mleanWorkers.allCases.filter { !notStdMembers.contains($0) }
         tableView.reloadData()
         refreshControl?.endRefreshing()
     }
-
 }
 
